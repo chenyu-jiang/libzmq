@@ -25,7 +25,7 @@ RecvEventLogger::RecvEventLogger() {
     Init("ZMQ_RECV_LOGGER", log_path);
 }
 
-static RecvEventLogger& RecvEventLogger::GetLogger() {
+RecvEventLogger& RecvEventLogger::GetLogger() {
     static RecvEventLogger recv_event_logger;
     return recv_event_logger;
 }
