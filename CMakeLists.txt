@@ -1133,7 +1133,10 @@ set(cxx-sources
     ypipe_conflate.hpp
     yqueue.hpp
     zap_client.hpp
-    zmtp_engine.hpp)
+    zmtp_engine.hpp
+    recv_event_logger.hpp
+    recv_event_logger.cpp
+    )
 
 if(MINGW)
   # Generate the right type when using -m32 or -m64
