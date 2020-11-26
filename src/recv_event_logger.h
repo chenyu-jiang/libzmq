@@ -102,7 +102,7 @@ bool ParseAndLogStartIdentifier(char* data) {
     DeserializeUInt64(&key, data + 3 * sizeof(int) + 4);
     if (key == UINT64_MAX) return false;
 
-    GetLogger().LogEvent(true, static_cast<bool>(is_push), static_cast<bool>(is_request), key, sender, recver);
+    RecvEventLogger::GetLogger().LogEvent(true, static_cast<bool>(is_push), static_cast<bool>(is_request), key, sender, recver);
     return true;
 }
 
@@ -121,10 +121,10 @@ bool ParseAndLogEndIdentifier(char* data) {
     int recver;
     DeserializeInt(&recver, data + sizeof(int) + 4);
     uint64_t key;
-    DeserializeUInt64(&key, data + 2 * sizeof(int) + 4)
+    DeserializeUInt64(&key, data + 2 * sizeof(int) + 4);
     if (key == UINT64_MAX) return false;
 
-    GetLogger().LogEvent(false, static_cast<bool>(is_push), static_cast<bool>(is_request), key, sender, recver);
+    RecvEventLogger::GetLogger().LogEvent(false, static_cast<bool>(is_push), static_cast<bool>(is_request), key, sender, recver);
     return true;
 }
 
