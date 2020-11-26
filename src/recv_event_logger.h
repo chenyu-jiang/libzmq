@@ -1,3 +1,6 @@
+#ifndef __ZMQ_RECV_EVENT_LOGGER_H_INCLUDED__
+#define __ZMQ_RECV_EVENT_LOGGER_H_INCLUDED__
+
 #include <string>
 #include <chrono>
 #include <stdlib.h>
@@ -156,3 +159,5 @@ bool ParseAndLogPossibleRepeatedIdentifier(zmq::msg_t* msg) {
 }
 
 } // namespace BPSLogger
+
+#endif
