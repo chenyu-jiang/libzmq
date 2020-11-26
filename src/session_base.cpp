@@ -51,7 +51,7 @@
 #include "radio.hpp"
 #include "dish.hpp"
 
-#include "recv_event_logger.h"
+#include "recv_event_logger.hpp"
 
 zmq::session_base_t *zmq::session_base_t::create (class io_thread_t *io_thread_,
                                                   bool active_,

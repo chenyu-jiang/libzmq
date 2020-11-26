@@ -1,6 +1,3 @@
-#ifndef __ZMQ_RECV_EVENT_LOGGER_H_INCLUDED__
-#define __ZMQ_RECV_EVENT_LOGGER_H_INCLUDED__
-
 #include <string>
 #include <chrono>
 #include <stdlib.h>
@@ -10,6 +7,7 @@
 #include <spdlog/async.h>
 
 #include "msg.hpp"
+#include "recv_event_logger.hpp"
 
 namespace BPSLogger
 {
@@ -17,57 +15,37 @@ namespace BPSLogger
 static size_t start_identifier_size = 3 * sizeof(int) + 4 + sizeof(uint64_t); 
 static size_t end_identifier_size = 2*sizeof(int) + 4 + sizeof(uint64_t); 
 
-class RecvEventLogger {
-public:
-    RecvEventLogger() {
-        char* log_path_from_env = std::getenv("ZMQ_RECV_TIMESTAMP_PATH");
-        std::string log_path;
-        if (log_path_from_env) {
-            log_path = log_path_from_env;
-        } else {
-            log_path = "./zmq_recv_timestamp.log";
-        }
-        Init("ZMQ_RECV_LOGGER", log_path);
-    };
-
-    static RecvEventLogger& GetLogger() {
-        static RecvEventLogger recv_event_logger;
-        return recv_event_logger;
+RecvEventLogger::RecvEventLogger() {
+    char* log_path_from_env = std::getenv("ZMQ_RECV_TIMESTAMP_PATH");
+    std::string log_path;
+    if (log_path_from_env) {
+        log_path = log_path_from_env;
+    } else {
+        log_path = "./zmq_recv_timestamp.log";
     }
+    Init("ZMQ_RECV_LOGGER", log_path);
+}
 
-    RecvEventLogger(RecvEventLogger const&) = delete;             // Copy construct
-    RecvEventLogger(RecvEventLogger&&) = delete;                  // Move construct
-    RecvEventLogger& operator=(RecvEventLogger const&) = delete;  // Copy assign
-    RecvEventLogger& operator=(RecvEventLogger &&) = delete;      // Move assign
+static RecvEventLogger::RecvEventLogger& GetLogger() {
+    static RecvEventLogger recv_event_logger;
+    return recv_event_logger;
+}
 
-    // RecvEventLogger(std::string logger_name, std::string log_path) {
-    //     Init(logger_name, log_path);
-    // }
+void RecvEventLogger::Init(std::string logger_name, std::string log_path) {
+    async_logger_ = spdlog::basic_logger_mt<spdlog::async_factory>(logger_name, log_path);
+    spdlog::flush_every(std::chrono::seconds(3));
+    async_logger_->set_pattern("%v");
+    inited_ = true;
+}
 
-    // bool IsInited() {
-    //     return inited_;
-    // }
+void RecvEventLogger::LogEvent(bool is_start, bool is_push, bool is_req, uint64_t tid, int sender, int recver) {
+    auto now = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch());
+    async_logger_->info("{} {} {} {} {} {} {}", std::to_string(now.count()), is_start, is_push, is_req, tid, sender, recver);
+}
 
-    void Init(std::string logger_name, std::string log_path) {
-        async_logger_ = spdlog::basic_logger_mt<spdlog::async_factory>(logger_name, log_path);
-        spdlog::flush_every(std::chrono::seconds(3));
-        async_logger_->set_pattern("%v");
-        inited_ = true;
-    }
-
-    void LogEvent(bool is_start, bool is_push, bool is_req, uint64_t tid, int sender, int recver) {
-        auto now = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch());
-        async_logger_->info("{} {} {} {} {} {} {}", std::to_string(now.count()), is_start, is_push, is_req, tid, sender, recver);
-    }
-
-    void LogString(std::string s) {
-        async_logger_->info("{}", s);
-    }
-
-private:
-    std::shared_ptr<spdlog::logger> async_logger_ = nullptr;
-    bool inited_ = false;
-};
+void RecvEventLogger::LogString(std::string s) {
+    async_logger_->info("{}", s);
+}
 
 void DeserializeUInt64(uint64_t* integer, char* buf) {
   *integer = 0;
@@ -159,5 +137,3 @@ bool ParseAndLogPossibleRepeatedIdentifier(zmq::msg_t* msg) {
 }
 
 } // namespace BPSLogger
-
-#endif

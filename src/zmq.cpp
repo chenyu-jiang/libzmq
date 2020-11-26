@@ -54,7 +54,7 @@
 #include "polling_util.hpp"
 #endif
 
-#include "recv_event_logger.h"
+#include "recv_event_logger.hpp"
 
 // TODO: determine if this is an issue, since zmq.h is being loaded from pch.
 // zmq.h must be included *after* poll.h for AIX to build properly
