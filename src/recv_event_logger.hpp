@@ -9,6 +9,10 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/async.h>
 
+#include "precompiled.hpp"
+#include "macros.hpp"
+#include "channel.hpp"
+#include "err.hpp"
 #include "msg.hpp"
 
 namespace BPSLogger
