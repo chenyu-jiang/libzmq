@@ -6,7 +6,6 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/async.h>
 
-#include "msg.hpp"
 #include "recv_event_logger.hpp"
 
 namespace BPSLogger
@@ -26,7 +25,7 @@ RecvEventLogger::RecvEventLogger() {
     Init("ZMQ_RECV_LOGGER", log_path);
 }
 
-static RecvEventLogger::RecvEventLogger& GetLogger() {
+static RecvEventLogger& RecvEventLogger::GetLogger() {
     static RecvEventLogger recv_event_logger;
     return recv_event_logger;
 }
