@@ -54,6 +54,8 @@
 #include "polling_util.hpp"
 #endif
 
+#include "recv_event_logger.h"
+
 // TODO: determine if this is an issue, since zmq.h is being loaded from pch.
 // zmq.h must be included *after* poll.h for AIX to build properly
 //#include "../include/zmq.h"
@@ -123,6 +125,10 @@ const char *zmq_strerror (int errnum_)
 int zmq_errno (void)
 {
     return errno;
+}
+
+void zmq_log(std::string msg) {
+    BPSLogger::RecvEventLogger::GetLogger().LogString(msg);
 }
 
 

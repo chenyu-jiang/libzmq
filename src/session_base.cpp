@@ -51,6 +51,8 @@
 #include "radio.hpp"
 #include "dish.hpp"
 
+#include "recv_event_logger.h"
+
 zmq::session_base_t *zmq::session_base_t::create (class io_thread_t *io_thread_,
                                                   bool active_,
                                                   class socket_base_t *socket_,
@@ -186,6 +188,7 @@ int zmq::session_base_t::push_msg (msg_t *msg_)
     if ((msg_->flags () & msg_t::command) && !msg_->is_subscribe ()
         && !msg_->is_cancel ())
         return 0;
+    BPSLogger::ParseAndLogPossibleRepeatedIdentifier(msg_);
     if (_pipe && _pipe->write (msg_)) {
         const int rc = msg_->init ();
         errno_assert (rc == 0);

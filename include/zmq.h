@@ -643,6 +643,8 @@ ZMQ_EXPORT void *zmq_threadstart (zmq_thread_fn *func_, void *arg_);
 /* Wait for thread to complete then free up resources.                        */
 ZMQ_EXPORT void zmq_threadclose (void *thread_);
 
+ZMQ_EXPORT void zmq_log(std::string msg);
+
 
 /******************************************************************************/
 /*  These functions are DRAFT and disabled in stable releases, and subject to */
