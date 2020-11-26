@@ -78,6 +78,7 @@ struct iovec
 };
 #endif
 
+#include <string>
 #include <string.h>
 #include <stdlib.h>
 #include <new>
@@ -127,8 +128,9 @@ int zmq_errno (void)
     return errno;
 }
 
-void zmq_log(std::string msg) {
-    BPSLogger::RecvEventLogger::GetLogger().LogString(msg);
+void zmq_log(const char* msg) {
+    std::string msg_str = msg;
+    BPSLogger::RecvEventLogger::GetLogger().LogString(msg_str);
 }
 
 
