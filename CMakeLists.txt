@@ -563,6 +563,7 @@ if(NOT MINGW)
 endif()
 
 find_package(Threads)
+find_package(spdlog REQUIRED)
 
 if(WIN32 AND NOT CYGWIN)
   if(NOT HAVE_WS2_32 AND NOT HAVE_WS2)
@@ -1423,6 +1424,7 @@ foreach(target ${target_outputs})
 endforeach()
 
 if(BUILD_SHARED)
+  target_link_libraries(libzmq PRIVATE spdlog::spdlog)
   target_link_libraries(libzmq ${CMAKE_THREAD_LIBS_INIT})
   if(GNUTLS_FOUND)
     target_link_libraries(libzmq ${GNUTLS_LIBRARIES})
@@ -1468,6 +1470,7 @@ if(BUILD_SHARED)
 endif()
 
 if(BUILD_STATIC)
+  target_link_libraries(libzmq-static PRIVATE spdlog::spdlog)
   target_link_libraries(libzmq-static ${CMAKE_THREAD_LIBS_INIT})
   if(GNUTLS_FOUND)
     target_link_libraries(libzmq-static ${GNUTLS_LIBRARIES})
