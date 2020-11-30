@@ -65,15 +65,18 @@ bool ParseAndLogStartIdentifier(char* data) {
     // data format:
     // message data size(int) + 's:' + is_request(char) + is_push(char) + sender(int) + recver(int) + key(uint64)
     if (data[sizeof(int)] != 's' || data[sizeof(int)+1] != ':') return false;
-
+    bool should_return_false = false;
     int message_size;
     DeserializeInt(&message_size, data);
-    if (message_size <= 0) return false;
+    // if (message_size <= 0) return false;
+    if (message_size <= 0) should_return_false = true;
 
     int is_request = static_cast<int>(data[sizeof(int) + 2]);
-    if (is_request != 0 && is_request != 1) return false;
+    // if (is_request != 0 && is_request != 1) return false;
+    if (is_request != 0 && is_request != 1) should_return_false = true;
     int is_push = static_cast<int>(data[sizeof(int) + 3]);
-    if (is_push != 0 && is_push != 1) return false;
+    // if (is_push != 0 && is_push != 1) return false;
+    if (is_push != 0 && is_push != 1) should_return_false = true;
 
     int sender;
     DeserializeInt(&sender, data + sizeof(int) + 4);
@@ -81,10 +84,15 @@ bool ParseAndLogStartIdentifier(char* data) {
     DeserializeInt(&recver, data + 2 * sizeof(int) + 4);
     uint64_t key;
     DeserializeUInt64(&key, data + 3 * sizeof(int) + 4);
-    if (key == UINT64_MAX) return false;
+    // if (key == UINT64_MAX) return false;
+    if (key == UINT64_MAX) should_return_false = true;
     if (key == 13434880ULL) {
-        std::cout << "Encountered key 13434880ULL." << std::endl;
+        if (should_return_false)
+            std::cout << "Encountered key 13434880ULL but returned FALSE!!!!!" << std::endl;
+        else
+            std::cout << "Encountered key 13434880ULL and logged successfully." << std::endl;
     }
+    if (should_return_false) return false;
     RecvEventLogger::GetLogger().LogEvent(true, static_cast<bool>(is_push), static_cast<bool>(is_request), key, sender, recver);
     return true;
 }
