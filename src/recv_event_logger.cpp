@@ -81,7 +81,9 @@ bool ParseAndLogStartIdentifier(char* data) {
     uint64_t key;
     DeserializeUInt64(&key, data + 3 * sizeof(int) + 4);
     if (key == UINT64_MAX) return false;
-
+    if (key == 13434880ULL) {
+        std::cout << "Encountered key 13434880ULL." << std::endl;
+    }
     RecvEventLogger::GetLogger().LogEvent(true, static_cast<bool>(is_push), static_cast<bool>(is_request), key, sender, recver);
     return true;
 }
