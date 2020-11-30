@@ -1,6 +1,7 @@
 #include <string>
 #include <chrono>
 #include <stdlib.h>
+#include <iostream>
 
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/spdlog.h>
